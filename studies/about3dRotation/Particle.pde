@@ -35,7 +35,7 @@ class Particle {
         line(-5000, 0, 0, 5000, 0, 0); // X axis
         line(0, -5000, 0, 0, 5000, 0); // Y axis
         strokeWeight(2);
-        ellipse(0, 0, raduis*2, raduis*2);
+        ellipse(0, 0, raduis * 2, raduis * 2);
         popMatrix();
     }
 
@@ -45,15 +45,27 @@ class Particle {
         strokeWeight(5);
         stroke(red);
         pushMatrix();
-        line(pos.x, pos.y,  pos.z, scale.x, scale.y, scale.z);
+        line(pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
         popMatrix();
 
     }
 
     // spine
-    void spine (int amt, float rotationX,  float rotationY, float rotationZ) {
-      for (int i = 0; i < amt; i ++) {
-        // code
-      }
+    void spine(int amt, float rotationX, float rotationY, float rotationZ) {
+        translate(pos.x, pos.y, pos.z);
+        pushMatrix();
+        rotateY(radians(rotationY));
+        rotateZ(radians(rotationZ));
+        for (int i = 0; i < 6; i++) {
+            float angle = map(i, 0, 6, 0, 360);
+            // rotateX(radians(rotationX));
+            pushMatrix();
+            rotateX(radians(angle));
+            strokeWeight(4);
+            stroke(blue);
+            line(0, 0, 0, raduis, 0, 0);
+            popMatrix();
+        }
+        popMatrix();
     }
 }
