@@ -37,9 +37,10 @@ int amt;
 
 public void setup() {
     
+    // ortho();
     
     p = new Particle();
-    cam = new PeasyCam(this, 1000);
+    cam = new PeasyCam(this, 500);
 
     // ControlP5 Settings
     cp5 = new ControlP5(this);
@@ -51,9 +52,9 @@ public void setup() {
     cp5.setColorBackground(color(0xff3C2F49, 80)); // empty
     cp5.setColorActive(color(0xffF92A3A)); // selection
 
-    int posx = 20;   int posy = 10;    int step = 16;    int tall = 12;    int wide = 200;
-    cp5.addSlider("amt").setRange(1, 10).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
-    cp5.addSlider("rotationX").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
+    int posx = 750;   int posy = 50;    int step = 26;    int tall = 20;    int wide = 200;
+    cp5.addSlider("amt").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
+    cp5.addSlider("rotationX").setRange(0, 60).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
     cp5.addSlider("rotationY").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
     cp5.addSlider("rotationZ").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
 }
@@ -62,8 +63,8 @@ public void draw() {
     background(p.gray);
     p.axis();
     p.dot();
-    // p.lines();
-    p.spine(amt, rotationX, rotationY, rotationZ);
+    p.lines(amt, rotationX, rotationY);
+    // p.spine(amt, rotationX, rotationY, rotationZ);
 
     // GUI
     hint(DISABLE_DEPTH_TEST);
@@ -120,14 +121,47 @@ class Particle {
     }
 
     // line
-    public void lines() {
-        PVector scale = new PVector(raduis, 0, 0);
-        strokeWeight(5);
-        stroke(red);
-        pushMatrix();
-        line(pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
-        popMatrix();
+    public void lines(int amt, float rotationX, float rotationY) {
+        PVector todot = new PVector(0, 0, rotationY);
+        for (int j = 0; j < 1; j++) {
+            float a = map(j, 0, 6 - 1, 0, TWO_PI);
+            float raduisx = 100 * cos(a);
+            float raduisy = 100 * sin(a);
+            PVector scale = new PVector(raduisx, raduisy, 0);
 
+            strokeWeight(2);
+            stroke(red);
+            pushMatrix();
+            line(pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
+            line(pos.x, pos.y, pos.z, todot.x, todot.y, todot.z);
+            popMatrix();
+
+            // PVector direction = PVector.sub(scale, pos);
+            // rotate(direction.heading());
+            pushMatrix();
+            translate(scale.x, scale.y, scale.z);
+            strokeWeight(10);
+            point(0,0,0);
+            rotateZ(radians(-90));
+            rotateZ(scale.heading());
+            // line(0,0,0, 100, 0, 0);
+            // rotateX(radians(rotationY));
+            text(scale.dot(todot), 0, 0, 0);
+            rotateX(scale.dot(todot)*0.001f);
+            for (int i = 0; i < 12; i++) {
+                float angle = map(i, 0, 12, 0, amt);
+                pushMatrix();
+                rotateY(radians(angle));
+                pushMatrix();
+                rotateZ(radians(rotationX));
+                strokeWeight(5);
+                // line(0,0,0, scale.x, scale.y, scale.z);
+                line(0, 0, 0, 50, 0, 0);
+                popMatrix();
+                popMatrix();
+            }
+            popMatrix();
+        }
     }
 
     // spine

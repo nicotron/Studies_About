@@ -40,14 +40,47 @@ class Particle {
     }
 
     // line
-    void lines() {
-        PVector scale = new PVector(raduis, 0, 0);
-        strokeWeight(5);
-        stroke(red);
-        pushMatrix();
-        line(pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
-        popMatrix();
+    void lines(int amt, float rotationX, float rotationY) {
+        PVector todot = new PVector(0, 0, rotationY);
+        for (int j = 0; j < 1; j++) {
+            float a = map(j, 0, 6 - 1, 0, TWO_PI);
+            float raduisx = 100 * cos(a);
+            float raduisy = 100 * sin(a);
+            PVector scale = new PVector(raduisx, raduisy, 0);
 
+            strokeWeight(2);
+            stroke(red);
+            pushMatrix();
+            line(pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
+            line(pos.x, pos.y, pos.z, todot.x, todot.y, todot.z);
+            popMatrix();
+
+            // PVector direction = PVector.sub(scale, pos);
+            // rotate(direction.heading());
+            pushMatrix();
+            translate(scale.x, scale.y, scale.z);
+            strokeWeight(10);
+            point(0,0,0);
+            rotateZ(radians(-90));
+            rotateZ(scale.heading());
+            // line(0,0,0, 100, 0, 0);
+            // rotateX(radians(rotationY));
+            text(scale.dot(todot), 0, 0, 0);
+            rotateX(scale.dot(todot)*0.001);
+            for (int i = 0; i < 12; i++) {
+                float angle = map(i, 0, 12, 0, amt);
+                pushMatrix();
+                rotateY(radians(angle));
+                pushMatrix();
+                rotateZ(radians(rotationX));
+                strokeWeight(5);
+                // line(0,0,0, scale.x, scale.y, scale.z);
+                line(0, 0, 0, 50, 0, 0);
+                popMatrix();
+                popMatrix();
+            }
+            popMatrix();
+        }
     }
 
     // spine

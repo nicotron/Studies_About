@@ -18,9 +18,10 @@ int amt;
 
 void setup() {
     smooth();
+    // ortho();
     size(1920, 950, P3D);
     p = new Particle();
-    cam = new PeasyCam(this, 1000);
+    cam = new PeasyCam(this, 500);
 
     // ControlP5 Settings
     cp5 = new ControlP5(this);
@@ -31,9 +32,9 @@ void setup() {
     cp5.setColorBackground(color(#3C2F49, 80)); // empty
     cp5.setColorActive(color(#F92A3A)); // selection
 
-    int posx = 20;   int posy = 10;    int step = 16;    int tall = 12;    int wide = 200;
-    cp5.addSlider("amt").setRange(1, 10).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
-    cp5.addSlider("rotationX").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
+    int posx = 750;   int posy = 50;    int step = 26;    int tall = 20;    int wide = 200;
+    cp5.addSlider("amt").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
+    cp5.addSlider("rotationX").setRange(0, 60).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
     cp5.addSlider("rotationY").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
     cp5.addSlider("rotationZ").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
 }
@@ -42,8 +43,8 @@ void draw() {
     background(p.gray);
     p.axis();
     p.dot();
-    // p.lines();
-    p.spine(amt, rotationX, rotationY, rotationZ);
+    p.lines(amt, rotationX, rotationY);
+    // p.spine(amt, rotationX, rotationY, rotationZ);
 
     // GUI
     hint(DISABLE_DEPTH_TEST);
