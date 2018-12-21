@@ -1,6 +1,7 @@
 class Particle {
     PVector pos, acc, vel;
     color bg, fill, stroke, gray, blue, cyan, red, purple;
+    float raduis;
 
     Particle() {
         gray = color(231, 237, 244);
@@ -11,6 +12,7 @@ class Particle {
         pos = new PVector(0, 0, 0);
         acc = new PVector(0, 0, 0);
         vel = new PVector(0, 0, 0);
+        raduis = 100;
     }
     void movement() {
         vel.add(acc);
@@ -22,28 +24,6 @@ class Particle {
         point(pos.x, pos.y, pos.z);
     }
 
-    /*
-    knowingAxis to make:
-    a wire wheel of lines rotating perpendicular to the line between it's and
-    the floor below
-
-    */
-    void knowingAxis() {
-        PVector r  = raduis(100);
-        strokeWeight(8);
-        stroke(blue);
-        point(r.x, r.y, r.z);
-        PVector l = new PVector(40, 0, 0);
-        line(r.x, r.y, r.z, l.x, l.y, l.z);
-       }
-
-
-
-    // given a float, return a 3d vector for raduis 2d
-    PVector raduis(float r) {
-        PVector v = new PVector(r, 0, 0);
-        return v;
-    }
     // axis
     void axis() {
         stroke(purple);
@@ -61,32 +41,41 @@ class Particle {
 
     // line
     void lines(int amt, float rotationX, float rotationY) {
-        for (int j = 0; j < 6; j++) {
+        PVector todot = new PVector(0, 0, rotationY);
+        for (int j = 0; j < 1; j++) {
             float a = map(j, 0, 6 - 1, 0, TWO_PI);
             float raduisx = 100 * cos(a);
             float raduisy = 100 * sin(a);
-            PVector position = new PVector(raduisx, raduisy, 0);
+            PVector scale = new PVector(raduisx, raduisy, 0);
 
-            strokeWeight(4);
-            stroke(red);
-            line(pos.x, pos.y, pos.z, position.x, position.y, position.z);
             strokeWeight(2);
-            stroke(blue);
-
+            stroke(red);
             pushMatrix();
-            translate(position.x, position.y, position.z);  // translate to every point
+            line(pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
+            line(pos.x, pos.y, pos.z, todot.x, todot.y, todot.z);
+            popMatrix();
 
-            rotateZ(radians(-90));                          // rotate
-            rotateZ(position.heading());
-            for (int i = 0; i < 5; i++) {
-                float angle = map(i, 0, 4, 0, 360);
+            // PVector direction = PVector.sub(scale, pos);
+            // rotate(direction.heading());
+            pushMatrix();
+            translate(scale.x, scale.y, scale.z);
+            strokeWeight(10);
+            point(0,0,0);
+            rotateZ(radians(-90));
+            rotateZ(scale.heading());
+            // line(0,0,0, 100, 0, 0);
+            // rotateX(radians(rotationY));
+            text(scale.dot(todot), 0, 0, 0);
+            rotateX(scale.dot(todot)*0.001);
+            for (int i = 0; i < 12; i++) {
+                float angle = map(i, 0, 12, 0, amt);
                 pushMatrix();
                 rotateY(radians(angle));
                 pushMatrix();
                 rotateZ(radians(rotationX));
                 strokeWeight(5);
-                // line(0,0,0, position.x, position.y, position.z);
-                line(0, 0, 0, 20, 0, 0);
+                // line(0,0,0, scale.x, scale.y, scale.z);
+                line(0, 0, 0, 50, 0, 0);
                 popMatrix();
                 popMatrix();
             }

@@ -49,22 +49,37 @@ public void setup() {
     cp5.setColorValueLabel(color(0xffD36D94)); // value
     cp5.setColorForeground(color(0xff3C2F49, 80)); // fill
 
+
     cp5.setColorBackground(color(0xff3C2F49, 80)); // empty
     cp5.setColorActive(color(0xffF92A3A)); // selection
 
-    int posx = 750;   int posy = 50;    int step = 26;    int tall = 20;    int wide = 200;
-    cp5.addSlider("amt").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
-    cp5.addSlider("rotationX").setRange(0, 60).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
-    cp5.addSlider("rotationY").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
-    cp5.addSlider("rotationZ").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0); posy += step;
+    float posx = width *.25f;
+    int posy = 50;
+    int step = 26;
+    int tall = 20;
+    int wide = 200;
+    cp5.addSlider("amt").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("rotationX").setRange(0, 60).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("rotationY").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("rotationZ").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
 }
 
 public void draw() {
     background(p.gray);
+
     p.axis();
     p.dot();
-    p.lines(amt, rotationX, rotationY);
-    // p.spine(amt, rotationX, rotationY, rotationZ);
+    // p.lines(amt, rotationZ, rotationY);
+
+    p.knowingAxis();
+
+    stroke(255);
+    strokeWeight(4);
+    line(0, 0, 0, 0, 0, 10);
 
     // GUI
     hint(DISABLE_DEPTH_TEST);
@@ -82,7 +97,6 @@ public void draw() {
 class Particle {
     PVector pos, acc, vel;
     int bg, fill, stroke, gray, blue, cyan, red, purple;
-    float raduis;
 
     Particle() {
         gray = color(231, 237, 244);
@@ -93,7 +107,6 @@ class Particle {
         pos = new PVector(0, 0, 0);
         acc = new PVector(0, 0, 0);
         vel = new PVector(0, 0, 0);
-        raduis = 100;
     }
     public void movement() {
         vel.add(acc);
@@ -105,6 +118,28 @@ class Particle {
         point(pos.x, pos.y, pos.z);
     }
 
+    /*
+    knowingAxis to make:
+    a wire wheel of lines rotating perpendicular to the line between it's and
+    the floor below
+
+    */
+    public void knowingAxis() {
+        PVector r  = raduis(100);
+        strokeWeight(8);
+        stroke(blue);
+        point(r.x, r.y, r.z);
+        PVector l = new PVector(40, 0, 0);
+        line(r.x, r.y, r.z, l.x, l.y, l.z);
+       }
+
+
+
+    // given a float, return a 3d vector for raduis 2d
+    public PVector raduis(float r) {
+        PVector v = new PVector(r, 0, 0);
+        return v;
+    }
     // axis
     public void axis() {
         stroke(purple);
@@ -122,41 +157,32 @@ class Particle {
 
     // line
     public void lines(int amt, float rotationX, float rotationY) {
-        PVector todot = new PVector(0, 0, rotationY);
-        for (int j = 0; j < 1; j++) {
+        for (int j = 0; j < 6; j++) {
             float a = map(j, 0, 6 - 1, 0, TWO_PI);
             float raduisx = 100 * cos(a);
             float raduisy = 100 * sin(a);
-            PVector scale = new PVector(raduisx, raduisy, 0);
+            PVector position = new PVector(raduisx, raduisy, 0);
 
-            strokeWeight(2);
+            strokeWeight(4);
             stroke(red);
-            pushMatrix();
-            line(pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
-            line(pos.x, pos.y, pos.z, todot.x, todot.y, todot.z);
-            popMatrix();
+            line(pos.x, pos.y, pos.z, position.x, position.y, position.z);
+            strokeWeight(2);
+            stroke(blue);
 
-            // PVector direction = PVector.sub(scale, pos);
-            // rotate(direction.heading());
             pushMatrix();
-            translate(scale.x, scale.y, scale.z);
-            strokeWeight(10);
-            point(0,0,0);
-            rotateZ(radians(-90));
-            rotateZ(scale.heading());
-            // line(0,0,0, 100, 0, 0);
-            // rotateX(radians(rotationY));
-            text(scale.dot(todot), 0, 0, 0);
-            rotateX(scale.dot(todot)*0.001f);
-            for (int i = 0; i < 12; i++) {
-                float angle = map(i, 0, 12, 0, amt);
+            translate(position.x, position.y, position.z);  // translate to every point
+
+            rotateZ(radians(-90));                          // rotate
+            rotateZ(position.heading());
+            for (int i = 0; i < 5; i++) {
+                float angle = map(i, 0, 4, 0, 360);
                 pushMatrix();
                 rotateY(radians(angle));
                 pushMatrix();
                 rotateZ(radians(rotationX));
                 strokeWeight(5);
-                // line(0,0,0, scale.x, scale.y, scale.z);
-                line(0, 0, 0, 50, 0, 0);
+                // line(0,0,0, position.x, position.y, position.z);
+                line(0, 0, 0, 20, 0, 0);
                 popMatrix();
                 popMatrix();
             }
@@ -183,7 +209,7 @@ class Particle {
         popMatrix();
     }
 }
-  public void settings() {  size(1920, 950, P3D);  smooth(); }
+  public void settings() {  size(920, 950, P3D);  smooth(); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "about3dRotation" };
     if (passedArgs != null) {
