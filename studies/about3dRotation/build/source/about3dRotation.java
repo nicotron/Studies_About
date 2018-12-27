@@ -32,7 +32,7 @@ PeasyCam cam;
 ControlP5 cp5;
 
 Particle p;
-float raduis, rotationX, rotationY, rotationZ;
+float raduis, rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2;
 int amt;
 
 public void setup() {
@@ -40,7 +40,9 @@ public void setup() {
     // ortho();
     
     p = new Particle();
-    cam = new PeasyCam(this, 500);
+    cam = new PeasyCam(this, 200);
+    cam.rotateZ(radians(-45));
+    cam.rotateX(radians(-60));
 
     // ControlP5 Settings
     cp5 = new ControlP5(this);
@@ -60,22 +62,28 @@ public void setup() {
     int wide = 200;
     cp5.addSlider("amt").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
-    cp5.addSlider("rotationX").setRange(0, 60).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    cp5.addSlider("rotationX").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
     cp5.addSlider("rotationY").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
     cp5.addSlider("rotationZ").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
+    cp5.addSlider("rotationX2").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("rotationY2").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("rotationZ2").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
 }
 
 public void draw() {
-    background(p.gray);
+    background(p.gray, 10);
 
     p.axis();
     p.dot();
     // p.lines(amt, rotationZ, rotationY);
 
-    p.knowingAxis();
+    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2);
 
     stroke(255);
     strokeWeight(4);
@@ -124,16 +132,48 @@ class Particle {
     the floor below
 
     */
-    public void knowingAxis() {
-        PVector r  = raduis(100);
+    public void knowingAxis(float rotationX, float rotationY, float rotationZ,
+        float rotationX2, float rotationY2, float rotationZ2) {
+        PVector r = raduis(50);
+        circleRadius(r);
+
+        pushMatrix();
+        rotateX(radians(rotationX));
+        rotateY(radians(rotationY));
+        rotateZ(radians(rotationZ));
+
+        pushMatrix();
+        translate(r.x, r.y, r.z);
+        rotateX(radians(rotationX2));
+        rotateY(radians(rotationY2));
+        rotateZ(radians(rotationZ2));
+        pivot();
+        PVector l = new PVector(r.x/2, 0, 0);
+        stroke(purple);
+        line(r.x, r.y, r.z, l.x, l.y, l.z);
+
+        popMatrix();
+        popMatrix();
+    }
+
+    public void pivot(){
+        strokeWeight(5);
+        float l = 35;
+        stroke(255, 0, 0);line(0,0,0, l, 0, 0);
+        stroke(0, 255, 0);line(0,0,0, 0, l, 0);
+        stroke(0, 0, 255);line(0,0,0, 0, 0, l);
+    }
+
+    public void pointRaduis(PVector r) {
         strokeWeight(8);
         stroke(blue);
         point(r.x, r.y, r.z);
-        PVector l = new PVector(40, 0, 0);
-        line(r.x, r.y, r.z, l.x, l.y, l.z);
-       }
-
-
+    }
+    public void circleRadius(PVector r){
+        strokeWeight(1);
+        stroke(51);
+        ellipse(pos.x, pos.y, r.x, r.x);
+    }
 
     // given a float, return a 3d vector for raduis 2d
     public PVector raduis(float r) {
@@ -170,9 +210,9 @@ class Particle {
             stroke(blue);
 
             pushMatrix();
-            translate(position.x, position.y, position.z);  // translate to every point
+            translate(position.x, position.y, position.z); // translate to every point
 
-            rotateZ(radians(-90));                          // rotate
+            rotateZ(radians(-90)); // rotate
             rotateZ(position.heading());
             for (int i = 0; i < 5; i++) {
                 float angle = map(i, 0, 4, 0, 360);

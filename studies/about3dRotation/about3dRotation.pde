@@ -13,7 +13,7 @@ PeasyCam cam;
 ControlP5 cp5;
 
 Particle p;
-float raduis, rotationX, rotationY, rotationZ;
+float raduis, rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2;
 int amt;
 
 void setup() {
@@ -21,7 +21,9 @@ void setup() {
     // ortho();
     size(920, 950, P3D);
     p = new Particle();
-    cam = new PeasyCam(this, 500);
+    cam = new PeasyCam(this, 200);
+    cam.rotateZ(radians(-45));
+    cam.rotateX(radians(-60));
 
     // ControlP5 Settings
     cp5 = new ControlP5(this);
@@ -39,26 +41,28 @@ void setup() {
     int wide = 200;
     cp5.addSlider("amt").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
-    cp5.addSlider("rotationX").setRange(0, 60).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    cp5.addSlider("rotationX").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
     cp5.addSlider("rotationY").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
     cp5.addSlider("rotationZ").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
+    cp5.addSlider("rotationX2").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("rotationY2").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("rotationZ2").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
 }
 
 void draw() {
-    background(p.gray);
+    background(p.gray, 10);
 
     p.axis();
     p.dot();
-    // p.lines(amt, rotationZ, rotationY);
 
-    p.knowingAxis();
+    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2);
 
-    stroke(255);
-    strokeWeight(4);
-    line(0, 0, 0, 0, 0, 10);
 
     // GUI
     hint(DISABLE_DEPTH_TEST);

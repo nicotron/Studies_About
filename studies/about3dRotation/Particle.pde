@@ -28,16 +28,48 @@ class Particle {
     the floor below
 
     */
-    void knowingAxis() {
-        PVector r  = raduis(100);
+    void knowingAxis(float rotationX, float rotationY, float rotationZ,
+        float rotationX2, float rotationY2, float rotationZ2) {
+        PVector r = raduis(100);
+        circleRadius(r);
+
+        pushMatrix();
+        rotateX(radians(rotationX));
+        rotateY(radians(rotationY));
+        rotateZ(radians(rotationZ));
+
+        pushMatrix();
+        translate(r.x, r.y, r.z);
+        rotateX(radians(rotationX2));
+        rotateY(radians(rotationY2));
+        rotateZ(radians(rotationZ2));
+        pivot();
+        PVector l = new PVector(r.x/2, 0, 0);
+        stroke(purple);
+        line(r.x, r.y, r.z, l.x, l.y, l.z);
+
+        popMatrix();
+        popMatrix();
+    }
+
+    void pivot(){
+        strokeWeight(5);
+        float l = 35;
+        stroke(255, 0, 0);line(0,0,0, l, 0, 0);
+        stroke(0, 255, 0);line(0,0,0, 0, l, 0);
+        stroke(0, 0, 255);line(0,0,0, 0, 0, l);
+    }
+
+    void pointRaduis(PVector r) {
         strokeWeight(8);
         stroke(blue);
         point(r.x, r.y, r.z);
-        PVector l = new PVector(40, 0, 0);
-        line(r.x, r.y, r.z, l.x, l.y, l.z);
-       }
-
-
+    }
+    void circleRadius(PVector r){
+        strokeWeight(1);
+        stroke(51);
+        ellipse(pos.x, pos.y, r.x, r.x);
+    }
 
     // given a float, return a 3d vector for raduis 2d
     PVector raduis(float r) {
@@ -74,9 +106,9 @@ class Particle {
             stroke(blue);
 
             pushMatrix();
-            translate(position.x, position.y, position.z);  // translate to every point
+            translate(position.x, position.y, position.z); // translate to every point
 
-            rotateZ(radians(-90));                          // rotate
+            rotateZ(radians(-90)); // rotate
             rotateZ(position.heading());
             for (int i = 0; i < 5; i++) {
                 float angle = map(i, 0, 4, 0, 360);
