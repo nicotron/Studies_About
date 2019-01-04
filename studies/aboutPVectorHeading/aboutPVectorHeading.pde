@@ -1,8 +1,17 @@
+import peasy.*;
+
+PeasyCam cam;
 PVector center;
+
 void setup() {
-    size(800, 600);
+    size(800, 600, P3D);
     noCursor();
     center = new PVector(width/2, height/2);
+
+    // cam setup
+    cam = new PeasyCam(this, 200);
+    cam.rotateZ(radians(-45));
+    cam.rotateX(radians(-60));
 }
 
 void draw() {
