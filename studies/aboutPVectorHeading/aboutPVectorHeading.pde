@@ -6,7 +6,7 @@ void setup() {
 }
 
 void draw() {
-    background(#EEF1F5);
+    background(253);
 
     // math --------------------------------------------------------------------
     PVector mouse = new PVector(mouseX, mouseY);
@@ -19,14 +19,29 @@ void draw() {
     float convertion = map(degre, -180, 180, 0, 360);
     float v1RotationAngle_90 = angle;
 
+    // set magnitude of vector for GUI
+    mouse.setMag(50);
+    v1.setMag(50);
+
      v1.rotate(radians(-90));
-     
+
     // math results visualized--------------------------------------------------
+    // placing the modified vector in the position of the subtractor
+    // a light blue line inside push and pop matrices
+    pushMatrix();
+    translate(center.x, center.y);
+    stroke(#0B0B0A); strokeWeight(3);
+    line(0,0, mouse.x, mouse.y);
+    // line rotated v1 copy of mouse vector
+    stroke(#F53724); strokeWeight(3);
+    line(0,0, v1.x, v1.y);
+    popMatrix();
+
     // center point
     strokeWeight(5);    stroke(#334827);
     point(center.x, center.y);
 
-    // v.heading
+    // v.heading text
     fill(51);
     text("v.heading() "+angle, center.x, center.y-5);
     // v.heading in degrees
@@ -34,14 +49,10 @@ void draw() {
     text("convertion("+convertion+")", center.x, center.y-50);
     text("v1RotationAngle_90("+ v1RotationAngle_90 +")", center.x, center.y-75);
 
-    // placing the modified vector in the position of the subtractor
-    // a light blue line inside push and pop matrices
+    // GUI mouse cursor
     pushMatrix();
-    translate(center.x, center.y);
-    stroke(#F5150B); strokeWeight(1);
-    line(0,0, mouse.x, mouse.y);
-    // line rotated v1 copy of mouse vector
-    stroke(#334827); strokeWeight(1);
-    line(0,0, v1.x, v1.y);
+    // translate(center.x, center.y);
+    noStroke(); fill(#0B0B0A, 90);
+    ellipse(mouseX, mouseY, 20, 20);
     popMatrix();
 }
