@@ -13,8 +13,9 @@ PeasyCam cam;
 ControlP5 cp5;
 
 Particle p;
-float raduis, rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2;
-int amt;
+float raduis, rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2,
+    step;
+int radio;
 
 void setup() {
     smooth();
@@ -39,7 +40,7 @@ void setup() {
     int step = 26;
     int tall = 20;
     int wide = 200;
-    cp5.addSlider("amt").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    cp5.addSlider("radio").setValue(50).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
     cp5.addSlider("rotationX").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
@@ -53,15 +54,25 @@ void setup() {
     posy += step;
     cp5.addSlider("rotationZ2").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
+    cp5.addSlider("step").setRange(0, 60).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
 }
 
 void draw() {
     background(p.gray, 10);
 
-    p.axis();
-    p.dot();
+    p.axis(0);
+    p.dot(0);
+    p.circleRadius(radio);
+    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio);
 
-    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2);
+    p.axis(step);
+    p.dot(step);
+    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio);
+    // p.circleRadius(radio);
+
+    p.connect(0, step);
+
 
 
     // GUI

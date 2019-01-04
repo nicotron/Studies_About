@@ -1,6 +1,7 @@
 class Particle {
     PVector pos, acc, vel;
     color bg, fill, stroke, gray, blue, cyan, red, purple;
+    PVector [] coordenates = new PVector[2];
 
     Particle() {
         gray = color(231, 237, 244);
@@ -16,7 +17,8 @@ class Particle {
         vel.add(acc);
         pos.add(vel);
     }
-    void dot() {
+    void dot(float step) {
+        pos.z = step;
         strokeWeight(5);
         stroke(red);
         point(pos.x, pos.y, pos.z);
@@ -29,32 +31,37 @@ class Particle {
 
     */
     void knowingAxis(float rotationX, float rotationY, float rotationZ,
-        float rotationX2, float rotationY2, float rotationZ2) {
-        PVector r = raduis(100);
-        circleRadius(r);
+        float rotationX2, float rotationY2, float rotationZ2, float _r) {
+        PVector r = raduis(_r);
+        // circleRadius(r.x);
 
         pushMatrix();
-        rotateX(radians(rotationX));
-        rotateY(radians(rotationY));
-        rotateZ(radians(rotationZ));
+            rotateX(radians(rotationX));
+            rotateY(radians(rotationY));
+            rotateZ(radians(rotationZ));
 
-        pushMatrix();
-        translate(r.x, r.y, r.z);
-        rotateX(radians(rotationX2));
-        rotateY(radians(rotationY2));
-        rotateZ(radians(rotationZ2));
-        pivot();
-        PVector l = new PVector(r.x/2, 0, 0);
-        stroke(purple);
-        line(r.x, r.y, r.z, l.x, l.y, l.z);
-
-        popMatrix();
+            pushMatrix();
+                translate(r.x, r.y, r.z);
+                rotateX(radians(rotationX2));
+                rotateY(radians(rotationY2));
+                rotateZ(radians(rotationZ2));
+                pivot();
+                PVector l = new PVector(50, 0, 0);
+                stroke(purple, 90); strokeWeight(5);
+                // line(r.x, r.y, r.z, r.x + l.x, r.y, r.z);
+                line(0,0,0, l.x, r.y, r.z);
+            popMatrix();
         popMatrix();
     }
 
+
+    // connect
+    void connect (float ground, float step) {
+
+    }
     void pivot(){
-        strokeWeight(5);
-        float l = 35;
+        strokeWeight(2);
+        float l = 20;
         stroke(255, 0, 0);line(0,0,0, l, 0, 0);
         stroke(0, 255, 0);line(0,0,0, 0, l, 0);
         stroke(0, 0, 255);line(0,0,0, 0, 0, l);
@@ -65,10 +72,10 @@ class Particle {
         stroke(blue);
         point(r.x, r.y, r.z);
     }
-    void circleRadius(PVector r){
+    void circleRadius(float r){
         strokeWeight(1);
         stroke(51);
-        ellipse(pos.x, pos.y, r.x, r.x);
+        ellipse(pos.x, pos.y, r*2, r*2);
     }
 
     // given a float, return a 3d vector for raduis 2d
@@ -77,17 +84,19 @@ class Particle {
         return v;
     }
     // axis
-    void axis() {
-        stroke(purple);
-        noFill();
+    void axis(float step) {
+        // change z parameter in pos vector
+        pos.z = step;
+
+        stroke(purple); noFill();
         pushMatrix();
-        translate(pos.x, pos.y, pos.z);
-        strokeWeight(0.1);
-        strokeCap(ROUND);
-        line(-5000, 0, 0, 5000, 0, 0); // X axis
-        line(0, -5000, 0, 0, 5000, 0); // Y axis
-        strokeWeight(2);
-        ellipse(0, 0, raduis * 2, raduis * 2);
+            translate(pos.x, pos.y, pos.z);
+            strokeWeight(0.1);
+            strokeCap(ROUND);
+            line(-5000, 0, 0, 5000, 0, 0); // X axis
+            line(0, -5000, 0, 0, 5000, 0); // Y axis
+            strokeWeight(2);
+            ellipse(0, 0, raduis * 2, raduis * 2);
         popMatrix();
     }
 

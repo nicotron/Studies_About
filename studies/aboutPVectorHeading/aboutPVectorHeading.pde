@@ -6,7 +6,8 @@ PVector center;
 void setup() {
     size(800, 600, P3D);
     noCursor();
-    center = new PVector(width/2, height/2);
+    // center = new PVector(width/2, height/2);
+    center = new PVector(0, 0); // for cam translation
 
     // cam setup
     cam = new PeasyCam(this, 200);
@@ -20,7 +21,7 @@ void draw() {
     // math --------------------------------------------------------------------
     PVector mouse = new PVector(mouseX, mouseY);
     // operación entre vector, modificar el valor de mouse, restando center
-    mouse.sub(center);
+    // mouse.sub(center);
     float angle = mouse.heading();
     // v1 using v.heading() to rotate perpendicular to a v0(mouse)
     PVector v1 = new PVector(mouse.x, mouse.y);
