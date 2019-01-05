@@ -34,7 +34,7 @@ ControlP5 cp5;
 Particle p;
 float raduis, rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2,
     step;
-int radio;
+int radio1, radio2;
 
 public void setup() {
     
@@ -61,7 +61,9 @@ public void setup() {
     int step = 26;
     int tall = 20;
     int wide = 200;
-    cp5.addSlider("radio").setValue(50).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    cp5.addSlider("radio1").setValue(50).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("radio2").setValue(50).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
     cp5.addSlider("rotationX").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
@@ -82,27 +84,34 @@ public void setup() {
 public void draw() {
     background(p.gray, 10);
 
-    p.axis(0);
-    p.dot(0);
-    p.circleRadius(radio);
-    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio);
+    p.connect(0, step, radio1, radio2);
+    p.vector2vector();
 
-    p.axis(step);
-    p.dot(step);
-    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio);
-    // p.circleRadius(radio);
+    for (int i = 0; i < 2; i ++) {
+      p.axis(p.coordenates[i]);
+      p.dot(p.coordenates[i]);
+      p.circleRadius(p.points[i]);
+    }
 
-    p.connect(0, step);
+    // p.dot(0);
+    // p.circleRadius(radio1, 0);
+    // p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio1);
 
+    // p.dot(step);
+    // p.circleRadius(radio2, 1);
+    // p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio2);
+    // p.circleRadius(radio1);
 
 
     // GUI
+    // Seeing the GUI with out affect in the view
     hint(DISABLE_DEPTH_TEST);
     cam.beginHUD();
     cp5.draw();
+    p.data();
     cam.endHUD();
     hint(ENABLE_DEPTH_TEST);
-    // Using the GUI do not affect the view
+    // The mouse in the GUI do not affect the 3d cam
     if (cp5.isMouseOver()) {
         cam.setActive(false);
     } else {
@@ -112,7 +121,8 @@ public void draw() {
 class Particle {
     PVector pos, acc, vel;
     int bg, fill, stroke, gray, blue, cyan, red, purple;
-    PVector [] coordenates = new PVector[2];
+    PVector[] coordenates = new PVector[2];
+    PVector[] points = new PVector[2];
 
     Particle() {
         gray = color(231, 237, 244);
@@ -128,11 +138,11 @@ class Particle {
         vel.add(acc);
         pos.add(vel);
     }
-    public void dot(float step) {
-        pos.z = step;
+    public void dot(PVector v) {
+        // pos.z = step;
         strokeWeight(5);
         stroke(red);
-        point(pos.x, pos.y, pos.z);
+        point(v.x, v.y, v.z);
     }
 
     /*
@@ -147,35 +157,71 @@ class Particle {
         // circleRadius(r.x);
 
         pushMatrix();
-            rotateX(radians(rotationX));
-            rotateY(radians(rotationY));
-            rotateZ(radians(rotationZ));
+        rotateX(radians(rotationX));
+        rotateY(radians(rotationY));
+        rotateZ(radians(rotationZ));
 
-            pushMatrix();
-                translate(r.x, r.y, r.z);
-                rotateX(radians(rotationX2));
-                rotateY(radians(rotationY2));
-                rotateZ(radians(rotationZ2));
-                pivot();
-                PVector l = new PVector(50, 0, 0);
-                stroke(purple, 90); strokeWeight(5);
-                // line(r.x, r.y, r.z, r.x + l.x, r.y, r.z);
-                line(0,0,0, l.x, r.y, r.z);
-            popMatrix();
+        pushMatrix();
+        translate(r.x, r.y, r.z);
+        rotateX(radians(rotationX2));
+        rotateY(radians(rotationY2));
+        rotateZ(radians(rotationZ2));
+        pivot();
+        PVector l = new PVector(50, 0, 0);
+        stroke(purple, 90);
+        strokeWeight(5);
+        // line(r.x, r.y, r.z, r.x + l.x, r.y, r.z);
+        line(0, 0, 0, l.x, r.y, r.z);
+        popMatrix();
         popMatrix();
     }
 
 
-    // connect
-    public void connect (float ground, float step) {
+    // connect two points and make a Vector
+    public void connect(float ground, float step, float r1, float r2) {
+        PVector v0 = new PVector(pos.x, pos.y, ground);
+        PVector v1 = new PVector(pos.x, pos.y, step);
 
+        coordenates[0] = v0;
+        coordenates[1] = v1;
+
+        PVector vRadio1 = raduis(r1);
+        PVector vRadio2 = raduis(r2);
+        points[0] = vRadio1.add(v0);
+        points[1] = vRadio2.add(v1);
     }
-    public void pivot(){
+
+
+    // vector2vector
+    public void vector2vector () {
+        // PVector c0 = coordenates[0];
+        // PVector c1 = coordenates[1];
+        PVector p0 = points[0];
+        PVector p1 = points[1];
+
+        stroke(0, 0, 255, 250); strokeWeight(10);
+        point(p0.x, p0.y, p0.z);
+        stroke(0, 255, 0, 250); strokeWeight(10);
+        point(p1.x, p1.y, p1.z);
+    }
+    // data of the arrays
+    public void data() {
+        fill(51);
+        textSize(10);
+        text("c 0: " + coordenates[0], 50, height / 2);
+        text("c 1: " + coordenates[1], 50, height / 2 + 10);
+        text("p 0: " + points[0], 50, height / 2 + 20);
+        text("p 1: " + points[1], 50, height / 2 + 30);
+    }
+    public void pivot() {
         strokeWeight(2);
         float l = 20;
-        stroke(255, 0, 0);line(0,0,0, l, 0, 0);
-        stroke(0, 255, 0);line(0,0,0, 0, l, 0);
-        stroke(0, 0, 255);line(0,0,0, 0, 0, l);
+        stroke(255, 0, 0);
+        line(0, 0, 0, l, 0, 0);
+        stroke(0, 255, 0);
+        line(0, 0, 0, 0, l, 0);
+        stroke(0, 0, 255);
+        line(0, 0, 0, 0, 0, l);
     }
 
     public void pointRaduis(PVector r) {
@@ -183,10 +229,13 @@ class Particle {
         stroke(blue);
         point(r.x, r.y, r.z);
     }
-    public void circleRadius(float r){
+    public void circleRadius(PVector v) {
         strokeWeight(1);
         stroke(51);
-        ellipse(pos.x, pos.y, r*2, r*2);
+        // ellipse(pos.x, pos.y, r * 2, r * 2);
+        // PVector v0 = coordenates[index];
+        translate(0, 0, v.z);
+        ellipse(0,0, v.x*2, v.x*2);
     }
 
     // given a float, return a 3d vector for raduis 2d
@@ -195,19 +244,20 @@ class Particle {
         return v;
     }
     // axis
-    public void axis(float step) {
+    public void axis(PVector v) {
         // change z parameter in pos vector
-        pos.z = step;
+        // pos.z = step;
 
-        stroke(purple); noFill();
+        stroke(purple);
+        noFill();
         pushMatrix();
-            translate(pos.x, pos.y, pos.z);
-            strokeWeight(0.1f);
-            strokeCap(ROUND);
-            line(-5000, 0, 0, 5000, 0, 0); // X axis
-            line(0, -5000, 0, 0, 5000, 0); // Y axis
-            strokeWeight(2);
-            ellipse(0, 0, raduis * 2, raduis * 2);
+        translate(v.x, v.y, v.z);
+        strokeWeight(0.1f);
+        strokeCap(ROUND);
+        line(-5000, 0, 0, 5000, 0, 0); // X axis
+        line(0, -5000, 0, 0, 5000, 0); // Y axis
+        strokeWeight(2);
+        ellipse(0, 0, raduis * 2, raduis * 2);
         popMatrix();
     }
 

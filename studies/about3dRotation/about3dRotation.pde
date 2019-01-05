@@ -15,7 +15,7 @@ ControlP5 cp5;
 Particle p;
 float raduis, rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2,
     step;
-int radio;
+int radio1, radio2;
 
 void setup() {
     smooth();
@@ -40,7 +40,9 @@ void setup() {
     int step = 26;
     int tall = 20;
     int wide = 200;
-    cp5.addSlider("radio").setValue(50).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    cp5.addSlider("radio1").setValue(50).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    posy += step;
+    cp5.addSlider("radio2").setValue(50).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
     cp5.addSlider("rotationX").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
@@ -61,27 +63,34 @@ void setup() {
 void draw() {
     background(p.gray, 10);
 
-    p.axis(0);
-    p.dot(0);
-    p.circleRadius(radio);
-    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio);
+    p.connect(0, step, radio1, radio2);
+    p.vector2vector();
 
-    p.axis(step);
-    p.dot(step);
-    p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio);
-    // p.circleRadius(radio);
+    for (int i = 0; i < 2; i ++) {
+      p.axis(p.coordenates[i]);
+      p.dot(p.coordenates[i]);
+      p.circleRadius(p.points[i]);
+    }
 
-    p.connect(0, step);
+    // p.dot(0);
+    // p.circleRadius(radio1, 0);
+    // p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio1);
 
+    // p.dot(step);
+    // p.circleRadius(radio2, 1);
+    // p.knowingAxis(rotationX, rotationY, rotationZ, rotationX2, rotationY2, rotationZ2, radio2);
+    // p.circleRadius(radio1);
 
 
     // GUI
+    // Seeing the GUI with out affect in the view
     hint(DISABLE_DEPTH_TEST);
     cam.beginHUD();
     cp5.draw();
+    p.data();
     cam.endHUD();
     hint(ENABLE_DEPTH_TEST);
-    // Using the GUI do not affect the view
+    // The mouse in the GUI do not affect the 3d cam
     if (cp5.isMouseOver()) {
         cam.setActive(false);
     } else {
