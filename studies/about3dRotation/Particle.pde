@@ -5,7 +5,7 @@ class Particle {
     PVector[] points = new PVector[2];
 
     Particle() {
-        gray = color(231, 237, 244);
+        gray = color(21, 27, 24);
         blue = color(31, 9, 191);
         cyan = color(20, 219, 241);
         red = color(196, 15, 69);
@@ -21,7 +21,7 @@ class Particle {
     void dot(PVector v) {
         // pos.z = step;
         strokeWeight(5);
-        stroke(red);
+        stroke(gray);
         point(v.x, v.y, v.z);
     }
 
@@ -58,32 +58,96 @@ class Particle {
 
 
     // connect two points and make a Vector
-    void connect(float ground, float step, float r1, float r2) {
+    void connect(float ground, float step, float r0, float r1) {
         PVector v0 = new PVector(pos.x, pos.y, ground);
         PVector v1 = new PVector(pos.x, pos.y, step);
 
         coordenates[0] = v0;
         coordenates[1] = v1;
 
+        PVector vRadio0 = raduis(r0);
         PVector vRadio1 = raduis(r1);
-        PVector vRadio2 = raduis(r2);
-        points[0] = vRadio1.add(v0);
-        points[1] = vRadio2.add(v1);
+        points[0] = vRadio0.add(v0);
+        points[1] = vRadio1.add(v1);
     }
 
-
     // vector2vector
-    void vector2vector () {
-        // PVector c0 = coordenates[0];
-        // PVector c1 = coordenates[1];
+    void point2vector() {
         PVector p0 = points[0];
         PVector p1 = points[1];
 
-        stroke(0, 0, 255, 250); strokeWeight(10);
+        stroke(purple);
+        strokeWeight(10);
         point(p0.x, p0.y, p0.z);
-        stroke(0, 255, 0, 250); strokeWeight(10);
         point(p1.x, p1.y, p1.z);
     }
+
+    // linesVector
+    void linesVector(PVector v) {
+        stroke(255, 0, 0, 90);
+        strokeWeight(.4);
+        line(0, 0, 0, v.x, v.y, v.z);
+    }
+
+
+    // theVector
+    void theVector(float mag) {
+        PVector v0 = new PVector(points[0].x, points[0].y, points[0].z);
+        PVector v1 = new PVector(points[1].x, points[1].y, points[1].z);
+        PVector v2 = PVector.sub(v1, v0);
+        PVector v3 = new PVector(v2.y, v2.z);
+
+        v3.rotate(radians(-90));
+        v2.setMag(mag);
+
+        pushMatrix();
+            translate(v0.x, v0.y, v0.z);
+            stroke(cyan);
+            strokeWeight(4);
+            line(0, 0, 0, v2.x, v2.y, v2.z);
+            stroke(blue);
+            line(0, 0, 0, v3.x, v3.y, 10);
+
+        popMatrix();
+
+    }
+
+    // linesFromVector
+    void linesFromVector(float mag) {
+        PVector v0 = new PVector(points[0].x, points[0].y, points[0].z);
+        PVector v1 = new PVector(points[1].x, points[1].y, points[1].z);
+
+        // a red line from the raw arrays
+        stroke(red);
+        strokeWeight(1);
+        line(v0.x, v0.y, v0.z, v1.x, v1.y, v1.z);
+
+        // copy the raw arrays to semag and use
+        PVector vc0 = new PVector();
+        vc0 = v0.copy();
+        vc0.setMag(mag);
+        PVector vc1 = new PVector();
+        vc1 = v1.copy();
+        vc1.setMag(mag);
+
+        // a line and two points from-to small-big
+        strokeWeight(2);
+        stroke(cyan);
+        line(v0.x, v0.y, v0.z, vc0.x, vc0.y, vc0.z);
+        strokeWeight(10);
+        point(v0.x, v0.y, v0.z);
+        strokeWeight(15);
+        point(vc0.x, vc0.y, vc0.z);
+
+        strokeWeight(2);
+        stroke(blue);
+        line(v1.x, v1.y, v1.z, vc1.x, vc1.y, vc1.z);
+        strokeWeight(10);
+        point(v1.x, v1.y, v1.z);
+        strokeWeight(15);
+        point(vc1.x, vc1.y, vc1.z);
+    }
+
     // data of the arrays
     void data() {
         fill(51);
@@ -93,6 +157,7 @@ class Particle {
         text("p 0: " + points[0], 50, height / 2 + 20);
         text("p 1: " + points[1], 50, height / 2 + 30);
     }
+
     void pivot() {
         strokeWeight(2);
         float l = 20;
@@ -109,13 +174,17 @@ class Particle {
         stroke(blue);
         point(r.x, r.y, r.z);
     }
+
     void circleRadius(PVector v) {
         strokeWeight(1);
-        stroke(51);
+        stroke(51, 100);
+        noFill();
         // ellipse(pos.x, pos.y, r * 2, r * 2);
         // PVector v0 = coordenates[index];
+        pushMatrix();
         translate(0, 0, v.z);
-        ellipse(0,0, v.x*2, v.x*2);
+        ellipse(0, 0, v.x * 2, v.x * 2);
+        popMatrix();
     }
 
     // given a float, return a 3d vector for raduis 2d
@@ -125,10 +194,7 @@ class Particle {
     }
     // axis
     void axis(PVector v) {
-        // change z parameter in pos vector
-        // pos.z = step;
-
-        stroke(purple);
+        stroke(purple, 10);
         noFill();
         pushMatrix();
         translate(v.x, v.y, v.z);
@@ -136,8 +202,6 @@ class Particle {
         strokeCap(ROUND);
         line(-5000, 0, 0, 5000, 0, 0); // X axis
         line(0, -5000, 0, 0, 5000, 0); // Y axis
-        strokeWeight(2);
-        ellipse(0, 0, raduis * 2, raduis * 2);
         popMatrix();
     }
 
