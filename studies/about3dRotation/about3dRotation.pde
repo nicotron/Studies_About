@@ -44,7 +44,7 @@ void setup() {
     posy += step;
     cp5.addSlider("radio2").setValue(50).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
-    cp5.addSlider("mag").setValue(0).setRange(0, 100).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
+    cp5.addSlider("mag").setValue(0).setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;
     cp5.addSlider("rotationX").setRange(0, 360).setPosition(posx, posy).setSize(wide, tall).setColorValue(0);
     posy += step;

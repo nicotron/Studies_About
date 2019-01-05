@@ -95,18 +95,16 @@ class Particle {
         PVector v0 = new PVector(points[0].x, points[0].y, points[0].z);
         PVector v1 = new PVector(points[1].x, points[1].y, points[1].z);
         PVector v2 = PVector.sub(v1, v0);
-        PVector v3 = new PVector(v2.y, v2.z);
-
-        v3.rotate(radians(-90));
-        v2.setMag(mag);
 
         pushMatrix();
             translate(v0.x, v0.y, v0.z);
             stroke(cyan);
             strokeWeight(4);
             line(0, 0, 0, v2.x, v2.y, v2.z);
+
+            rotateY(radians(90));
             stroke(blue);
-            line(0, 0, 0, v3.x, v3.y, 10);
+            line(0, 0, 0, v2.x, v2.y, v2.z);
 
         popMatrix();
 
