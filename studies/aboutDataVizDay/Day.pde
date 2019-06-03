@@ -8,7 +8,8 @@ class Day  {
     this.a = a;
     this.s = s;
     this.t = t;
-    this.maxTemperatureC = map(maxTemperatureC, 0, 10, 0, 50);
+    // this.maxTemperatureC = map(maxTemperatureC, 0, 10, 0, 50);
+    this.maxTemperatureC = maxTemperatureC;
     this.meanTemperatureC = map(meanTemperatureC, 0, 10, 0, 50);
     this.minTemperatureC = map(minTemperatureC, 0, 10, 0, 50);
     this.dewPointC = dewPointC;
@@ -17,7 +18,8 @@ class Day  {
     this.maxHumidity = maxHumidity;
     this.meanHumidity = meanHumidity;
     this.minHumidity = minHumidity;
-    this.maxSeaLevelPressurehPa = map(maxSeaLevelPressurehPa, 0, 1000, 0, 250);
+    // this.maxSeaLevelPressurehPa = map(maxSeaLevelPressurehPa, 0, 1000, 0, 250);
+    this.maxSeaLevelPressurehPa = maxSeaLevelPressurehPa;
     this.meanSeaLevelPressurehPa = map(meanSeaLevelPressurehPa, 0, 1000, 0, 250);
     this.minSeaLevelPressurehPa = map(minSeaLevelPressurehPa, 0, 1000, 0, 250);
     this.maxVisibilityKm = maxVisibilityKm;
@@ -62,6 +64,13 @@ class Day  {
     fill(pallete[2], 180);
     text(int(t), width/2, height*.5 + 125);
   }
+
+
+
+
+
+
+
 
   void temp() {
       stroke(pallete[0]);
@@ -154,6 +163,7 @@ class Day  {
   // show
   void show () {
     strokeWeight(5);
+    stroke(pallete[2]);
     point(x, y);
 
   }

@@ -21,7 +21,7 @@ public class about3dRotation extends PApplet {
 
 
 /*
-Study number: 1 - November 2018 - Nicolás Troncoso - Designer
+Study number: 1 - November 2018 - Nicol\u00e1s Troncoso - Designer
 */
 
 // How nested rotation woks
@@ -225,10 +225,6 @@ class Particle {
         PVector v0 = new PVector(points[0].x, points[0].y, points[0].z);
         PVector v1 = new PVector(points[1].x, points[1].y, points[1].z);
         PVector v2 = PVector.sub(v1, v0);
-        PVector v3 = new PVector(v2.x, v2.z);
-
-        v3.rotate(radians(-90));
-        // v2.setMag(50);
 
         pushMatrix();
             translate(v0.x, v0.y, v0.z);
