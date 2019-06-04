@@ -1,8 +1,16 @@
+
+	PFont banco, mes, anio;
 Bank[] banks, rankings;
-int index;
+int index, contador;
+float amt;
 
 void setup () {
-  size(1200, 600);
+  size(1920, 1080);
+	frameRate(24);
+	// index = 5;
+	banco = createFont("AmsiPro-Black.otf", 24);
+	mes = createFont("Isidora-Bold.otf", 56);
+	anio = createFont("Isidora-Thin", 56);
 
   Table tabla = loadTable("data.csv", "header");
   banks = new Bank[tabla.getRowCount()];
@@ -35,27 +43,43 @@ void setup () {
 }
 
 void draw() {
-  background(253);
-  // fill(253, 150);
-  // rect(0,0,width,height);
-  // float amt = map(frameCount%90, 0, 90, 0.1, 1);
-  float amt = 1;
-  // println(frameCount%90);
+	background(255);
+	int velocidad = 12;
+	int cambio = 24+24+12;
+	amt += 0.108;
 
 
   if (index > 87) { index = 0;}
-  if(frameCount%90 == 0) {
-    index++; amt=0;
+  if(contador%cambio == 0) {
+    index++;
+		amt=0.28;
   }
 
+	for (int i = 0; i < 5; i ++) {
+	  strokeWeight(1);
+		stroke(53);
+		float x = map(i, 0, 5, 270, 1800);
+		line(x, height*.35, x, height*.54);
+	}
 
   for(int i = 0; i < banks.length; i++) {
-    banks[i].title();
-    banks[i].time(index);
-    banks[i].money(index, amt);
-    // lerp(start, stop, amt)
-    banks[i].y = lerp(banks[i].y, map(rankings[i].ranks[index], 0, 13, 0, 600), 0.06);
+		if(rankings[i].ranks[index]> 0 && rankings[i].ranks[index]< 7) {
+			pushMatrix();
+
+			translate(50,50);
+	    banks[i].title();
+	    banks[i].time(index);
+	    banks[i].money(index, amt);
+	    // lerp(start, stop, amt)
+	    banks[i].y = lerp(banks[i].y, map(rankings[i].ranks[index], 0, 13, height*.3, height*.7), 0.18);
+			popMatrix();
+		}
   }
+	contador++;
+	saveFrame("filestop6/####.png");
 }
 
-void keyPressed() {}
+void keyPressed() {
+	if(key == '+') {index++;}
+	if(key == '-') {index--;}
+}
